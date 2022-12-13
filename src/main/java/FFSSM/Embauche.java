@@ -12,6 +12,7 @@ public class Embauche {
 
     private final Club employeur;
 
+
     public Embauche(LocalDate debut, Moniteur employe, Club employeur) {
         this.debut = debut;
         this.employe = employe;
@@ -23,8 +24,7 @@ public class Embauche {
      * @param dateFin la date à laquelle cette embauche est terminée
      */
     public void terminer(LocalDate dateFin) {
-         // TODO: Implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");	    
+         setFin(dateFin);
     }
     
     /**

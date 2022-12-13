@@ -4,12 +4,20 @@
 package FFSSM;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class Moniteur extends Plongeur {
 
-    public int numeroDiplome;
+    private int numeroDiplome;
+    private TreeSet<Embauche> embauches = new TreeSet<>(new Comparator<Embauche>() {
+        @Override
+        public int compare(Embauche o1, Embauche o2) {
+            if (o1.getDebut().isBefore(o2.getDebut())){
+                return 1;
+            }
+            return -1;
+        }
+    });
 
     public Moniteur(String numeroINSEE, String nom, String prenom, String adresse, String telephone, LocalDate naissance, int numeroDiplome) {
         super(numeroINSEE, nom, prenom, adresse, telephone, naissance);
@@ -22,8 +30,13 @@ public class Moniteur extends Plongeur {
      * @return l'employeur actuel de ce moniteur sous la forme d'un Optional
      */
     public Optional<Club> employeurActuel() {
-         // TODO: Implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+         Optional<Club> opC;
+         if (embauches.isEmpty() || embauches.first().estTerminee()){
+             opC = Optional.empty();
+         }else{
+             opC = Optional.of(embauches.first().getEmployeur());
+         }
+         return opC;
     }
     
     /**
@@ -32,13 +45,17 @@ public class Moniteur extends Plongeur {
      * @param debutNouvelle la date de début de l'embauche
      */
     public void nouvelleEmbauche(Club employeur, LocalDate debutNouvelle) {   
-         // TODO: Implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");	    
+        embauches.add(new Embauche(debutNouvelle, this, employeur));
     }
 
-    public List<Embauche> emplois() {
-         // TODO: Implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+    public TreeSet<Embauche> emplois() {
+        return embauches;
+    }
+
+    public void terminerEmbauche(LocalDate fin){
+        if (!embauches.first().estTerminee()) {
+            embauches.first().setFin(fin);
+        }
     }
 
 }

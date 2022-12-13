@@ -7,13 +7,13 @@ import java.time.LocalDate;
 
 public class Licence {
 
-    public Personne possesseur;
+    private Personne possesseur;
 
-    public String numero;
+    private String numero;
 
-    public LocalDate delivrance;
+    private LocalDate delivrance;
 
-    public Club club;
+    private Club club;
 
     public Licence(Personne possesseur, String numero, LocalDate delivrance, Club club) {
         this.possesseur = possesseur;
@@ -45,8 +45,15 @@ public class Licence {
      * @return vrai si valide à la date d
      **/
     public boolean estValide(LocalDate d) {
-         // TODO: Implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
-    }
+        boolean valide = true;
+        if(LocalDate.now().getYear()-delivrance.getYear()>1){
+            valide = false;
+        }else if (LocalDate.now().getYear() == delivrance.getYear()){
+            if (LocalDate.now().getDayOfYear()< delivrance.getDayOfYear()) {
+                valide = false;
+            }
+        }
+        return valide;
+         }
 
 }
