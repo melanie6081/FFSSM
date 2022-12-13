@@ -48,12 +48,15 @@ public class Licence {
         boolean valide = true;
         if(LocalDate.now().getYear()-delivrance.getYear()>1){
             valide = false;
-        }else if (LocalDate.now().getYear() == delivrance.getYear()){
-            if (LocalDate.now().getDayOfYear()< delivrance.getDayOfYear()) {
+        }else if (LocalDate.now().getYear() == delivrance.getYear()) {
+            return true;
+        }else{
+            if (LocalDate.now().getDayOfYear()> delivrance.getDayOfYear()) {
                 valide = false;
             }
         }
         return valide;
-         }
+    }
+
 
 }

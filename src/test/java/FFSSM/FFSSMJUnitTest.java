@@ -3,6 +3,7 @@ package FFSSM;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Optional;
 
 public class FFSSMJUnitTest {
@@ -27,6 +28,8 @@ public class FFSSMJUnitTest {
         assertFalse(p1.derniereLicence().estValide(LocalDate.now()), "La licence doit être invalide.");
         p1.ajouteLicence("0959002C",LocalDate.of(2022,06,10), c1);
         assertTrue(p1.derniereLicence().estValide(LocalDate.now()), "La licence doit être valide.");
+        p2.ajouteLicence("0745006M",LocalDate.of(2021,11,23),c2);
+        assertFalse(p2.derniereLicence().estValide(LocalDate.now()), "La licence doit être invalide.");
 
     }
 
@@ -34,6 +37,9 @@ public class FFSSMJUnitTest {
     public void testDerniereLicence(){
         p2.ajouteLicence("0756003L",LocalDate.of(2022,04,13), c2);
         Licence l = p2.derniereLicence();
+        assertEquals("0756003L", l.getNumero(), "Le numéro doit être 0756003L");
+        assertEquals(p2, l.getPossesseur(), "Le possesseur de cette licence doit être p2.");
+        assertEquals(c2, l.getClub(), "Cette licence doit être rattachée au club c2, le club de la plage.");
         p2.ajouteLicence("0746007M",LocalDate.of(2021,05,12), c2);
         assertEquals(l, p2.derniereLicence(), "La dernière licence de Loic doit être celle de 2022.");
     }
@@ -53,4 +59,22 @@ public class FFSSMJUnitTest {
         Embauche e = new Embauche(LocalDate.now(), m1, c2);
         assertEquals(m1, e.getEmploye(), "L'employe concerné par cette embauche doit être Léa Dupont (m1).");
     }
+
+    @Test
+    public void testPlongee(){
+        p2.ajouteLicence("0756003L",LocalDate.of(2022,04,13), c2);
+        p1.ajouteLicence("0959002C",LocalDate.of(2020,06,10), c1);
+        Site s = new Site("Epave du mont", "sortie débutants");
+        Plongee pl = new Plongee(s,m1,LocalDate.now(), 20, 45);
+        pl.ajouteParticipant(p2);
+        assertTrue(pl.estConforme(), "La plongée doit être conforme.");
+        pl.ajouteParticipant(p1);
+        assertFalse(pl.estConforme(),"La plongée ne doit pas être conforme.");
+        assertEquals(LocalDate.now(), pl.getDate(), "La date de la plongée doit être celle d'aujourd'hui.");
+        c2.organisePlongee(pl);
+        HashSet<Plongee> plongeeNC = new HashSet<>();
+        plongeeNC.add(pl);
+        assertEquals(plongeeNC, c2.plongeesNonConformes(), "La liste des plongées non conformes du club c2 ne doit comporter que la plongée pl.");
+    }
+
 }
